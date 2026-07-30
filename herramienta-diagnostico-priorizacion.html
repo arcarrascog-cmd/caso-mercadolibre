@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Excelencia Operacional Transporte — Caso de Negocio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FAFAF8;
+    --panel:#FFFFFF;
+    --ink:#16181D;
+    --ml-yellow:#FFE600;
+    --navy:#1F2452;
+    --navy-soft:#333A70;
+    --steel:#636B85;
+    --hair:#E4E2DA;
+    --risk:#C23B22;
+    --risk-soft:#FBEAE6;
+    --gain:#1F7A5C;
+    --gain-soft:#E7F3EE;
+    --warn:#B8860B;
+    --warn-soft:#FBF3DF;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'IBM Plex Sans',sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{ background:var(--ml-yellow); color:var(--ink); }
+  .mono{ font-family:'IBM Plex Mono',monospace; }
+  .display{ font-family:'Space Grotesk',sans-serif; }
+
+  a:focus-visible, button:focus-visible, [tabindex]:focus-visible{
+    outline:3px solid var(--navy);
+    outline-offset:2px;
+  }
+
+  /* ---------- Top identity bar ---------- */
+  header.top{
+    background:var(--navy);
+    color:#fff;
+    padding:18px 28px 16px;
+    border-bottom:5px solid var(--ml-yellow);
+  }
+  .top-inner{
+    max-width:1180px; margin:0 auto;
+    display:flex; align-items:flex-end; justify-content:space-between;
+    flex-wrap:wrap; gap:14px;
+  }
+  .brand-eyebrow{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--ml-yellow); margin:0 0 6px;
+  }
+  .brand-title{
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:700; font-size:22px; margin:0; line-height:1.25;
+    max-width:640px;
+  }
+  .brand-sub{
+    font-size:13px; color:#C7CAE0; margin:4px 0 0;
+  }
+
+  /* ---------- Tabs ---------- */
+  nav.tabs{
+    max-width:1180px; margin:22px auto 0; padding:0 28px;
+    display:flex; gap:6px; flex-wrap:wrap;
+  }
+  .tab-btn{
+    font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:14px;
+    background:transparent; border:1.5px solid var(--hair); color:var(--steel);
+    padding:9px 18px; border-radius:999px; cursor:pointer;
+    transition:all .15s ease;
+  }
+  .tab-btn:hover{ border-color:var(--navy); color:var(--navy); }
+  .tab-btn.active{
+    background:var(--navy); border-color:var(--navy); color:#fff;
+  }
+  .tab-btn .n{
+    font-family:'IBM Plex Mono',monospace; font-size:11px;
+    opacity:.7; margin-right:6px;
+  }
+
+  /* ---------- Causal ribbon (signature element) ---------- */
+  .ribbon-wrap{
+    max-width:1180px; margin:20px auto 0; padding:0 28px;
+  }
+  .ribbon{
+    background:var(--panel); border:1px solid var(--hair); border-radius:14px;
+    padding:16px 22px; display:flex; align-items:center; gap:0;
+    overflow-x:auto;
+  }
+  .ribbon-label{
+    font-family:'IBM Plex Mono',monospace; font-size:10.5px; letter-spacing:.1em;
+    text-transform:uppercase; color:var(--steel); margin-right:18px; white-space:nowrap;
+  }
+  .rnode{
+    display:flex; align-items:center; gap:10px; cursor:pointer;
+    padding:8px 14px; border-radius:10px; border:1.5px solid transparent;
+    transition:all .15s ease; white-space:nowrap;
+  }
+  .rnode:hover{ background:var(--bg); }
+  .rnode.active{ border-color:currentColor; }
+  .rnode .dot{ width:9px; height:9px; border-radius:50%; flex:none; }
+  .rnode .txt{ font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:13.5px; }
+  .rnode .sub{ font-size:11px; color:var(--steel); display:block; margin-top:1px; }
+  .rarrow{ color:var(--hair); font-size:20px; margin:0 4px; flex:none; }
+  .rnode[data-cat="control"]{ color:var(--navy); }
+  .rnode[data-cat="eficiencia"]{ color:var(--warn); }
+  .rnode[data-cat="servicio"]{ color:var(--risk); }
+  .rnode[data-cat="control"] .dot{ background:var(--navy); }
+  .rnode[data-cat="eficiencia"] .dot{ background:var(--warn); }
+  .rnode[data-cat="servicio"] .dot{ background:var(--risk); }
+
+  /* ---------- Layout ---------- */
+  main{ max-width:1180px; margin:0 auto; padding:26px 28px 70px; }
+  .panel{ display:none; }
+  .panel.active{ display:block; animation:fade .25s ease; }
+  @keyframes fade{ from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:translateY(0);} }
+
+  h2.section-title{
+    font-family:'Space Grotesk',sans-serif; font-size:19px; font-weight:700;
+    margin:0 0 4px; color:var(--navy);
+  }
+  p.section-sub{
+    font-size:13.5px; color:var(--steel); margin:0 0 20px; max-width:640px;
+  }
+
+  /* ---------- KPI grid ---------- */
+  .kpi-grid{
+    display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:26px;
+  }
+  @media(max-width:860px){ .kpi-grid{ grid-template-columns:repeat(2,1fr); } }
+  .kpi-card{
+    background:var(--panel); border:1px solid var(--hair); border-radius:12px;
+    padding:14px 15px; cursor:pointer; transition:box-shadow .15s ease, transform .15s ease;
+    border-left:4px solid var(--hair);
+  }
+  .kpi-card:hover{ box-shadow:0 4px 14px rgba(31,36,82,.08); transform:translateY(-1px); }
+  .kpi-card.open{ box-shadow:0 6px 18px rgba(31,36,82,.12); }
+  .kpi-card[data-cat="control"]{ border-left-color:var(--navy); }
+  .kpi-card[data-cat="eficiencia"]{ border-left-color:var(--warn); }
+  .kpi-card[data-cat="servicio"]{ border-left-color:var(--risk); }
+  .kpi-name{ font-size:12px; color:var(--steel); margin:0 0 8px; min-height:30px; }
+  .kpi-values{ display:flex; align-items:baseline; gap:8px; }
+  .kpi-actual{ font-family:'IBM Plex Mono',monospace; font-weight:600; font-size:20px; }
+  .kpi-meta{ font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--steel); }
+  .kpi-gap{
+    font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:600;
+    margin-top:8px; display:inline-block; padding:2px 8px; border-radius:6px;
+  }
+  .kpi-gap.bad{ background:var(--risk-soft); color:var(--risk); }
+  .kpi-detail{
+    display:none; margin-top:12px; padding-top:12px; border-top:1px dashed var(--hair);
+    font-size:12.5px; line-height:1.5; color:var(--ink);
+  }
+  .kpi-card.open .kpi-detail{ display:block; }
+
+  /* ---------- Problem blocks ---------- */
+  .prob-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-top:8px; }
+  @media(max-width:860px){ .prob-grid{ grid-template-columns:1fr; } }
+  .prob-card{
+    background:var(--panel); border:1px solid var(--hair); border-radius:12px; padding:16px 17px;
+    border-top:4px solid var(--hair);
+  }
+  .prob-card[data-cat="control"]{ border-top-color:var(--navy); }
+  .prob-card[data-cat="eficiencia"]{ border-top-color:var(--warn); }
+  .prob-card[data-cat="servicio"]{ border-top-color:var(--risk); }
+  .prob-title{ font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:14.5px; margin:0 0 8px; }
+  .prob-card ul{ margin:0; padding-left:18px; font-size:12.5px; line-height:1.6; color:var(--ink); }
+  .prob-card li{ margin-bottom:3px; }
+  .prob-so{ font-size:11.5px; color:var(--steel); font-style:italic; margin-top:10px; }
+
+  /* ---------- Matrix ---------- */
+  .matrix-wrap{ display:grid; grid-template-columns:1.3fr .9fr; gap:22px; align-items:start; }
+  @media(max-width:900px){ .matrix-wrap{ grid-template-columns:1fr; } }
+  .matrix-box{
+    background:var(--panel); border:1px solid var(--hair); border-radius:14px;
+    padding:26px 26px 40px; position:relative;
+  }
+  .matrix-grid{
+    position:relative; width:100%; aspect-ratio:1/0.82; border-left:2px solid var(--ink);
+    border-bottom:2px solid var(--ink);
+    background-image:
+      linear-gradient(to right, var(--hair) 1px, transparent 1px),
+      linear-gradient(to top, var(--hair) 1px, transparent 1px);
+    background-size:25% 25%;
+  }
+  .axis-label{ font-family:'IBM Plex Mono',monospace; font-size:10.5px; letter-spacing:.08em; color:var(--steel); text-transform:uppercase; }
+  .axis-x{ text-align:center; margin-top:10px; }
+  .axis-y{
+    position:absolute; left:-34px; top:50%; transform:translateY(-50%) rotate(-90deg);
+    transform-origin:center; white-space:nowrap;
+  }
+  .quad-tag{
+    position:absolute; font-family:'Space Grotesk',sans-serif; font-weight:600;
+    font-size:10.5px; color:var(--steel); opacity:.55; text-transform:uppercase; letter-spacing:.04em;
+  }
+  .pt{
+    position:absolute; width:30px; height:30px; margin:-15px 0 0 -15px;
+    border-radius:50%; display:flex; align-items:center; justify-content:center;
+    font-family:'IBM Plex Mono',monospace; font-weight:600; font-size:11px; color:#fff;
+    cursor:pointer; border:2px solid #fff; box-shadow:0 2px 6px rgba(0,0,0,.18);
+    transition:transform .15s ease;
+  }
+  .pt:hover, .pt.sel{ transform:scale(1.18); z-index:5; }
+  .pt[data-cat="control"]{ background:var(--navy); }
+  .pt[data-cat="eficiencia"]{ background:var(--warn); }
+  .pt[data-cat="servicio"]{ background:var(--risk); }
+  .pt.qw{ box-shadow:0 0 0 3px var(--gain-soft), 0 2px 6px rgba(0,0,0,.18); }
+
+  .detail-panel{
+    background:var(--panel); border:1px solid var(--hair); border-radius:14px;
+    padding:18px 20px; min-height:200px;
+  }
+  .detail-empty{ color:var(--steel); font-size:13px; padding-top:6px; }
+  .detail-tag{
+    display:inline-block; font-family:'IBM Plex Mono',monospace; font-size:10.5px;
+    padding:2px 8px; border-radius:6px; margin-bottom:10px; text-transform:uppercase; letter-spacing:.05em;
+  }
+  .detail-title{ font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:15px; margin:0 0 10px; }
+  .detail-row{ display:flex; justify-content:space-between; font-size:12.5px; padding:6px 0; border-bottom:1px solid var(--hair); }
+  .detail-row:last-child{ border-bottom:none; }
+  .detail-row b{ font-family:'IBM Plex Mono',monospace; }
+
+  .legend{ display:flex; gap:16px; flex-wrap:wrap; margin-top:16px; font-size:11.5px; color:var(--steel); }
+  .legend span{ display:inline-flex; align-items:center; gap:6px; }
+  .legend i{ width:9px; height:9px; border-radius:50%; display:inline-block; }
+
+  /* ---------- Roadmap ---------- */
+  .road-cols{ display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+  @media(max-width:860px){ .road-cols{ grid-template-columns:1fr; } }
+  .road-col-head{
+    display:flex; align-items:center; justify-content:space-between;
+    margin-bottom:12px; padding-bottom:10px; border-bottom:2px solid var(--ink);
+  }
+  .road-col-head h3{ font-family:'Space Grotesk',sans-serif; font-size:14.5px; margin:0; }
+  .road-col-head .days{ font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--steel); }
+  .road-card{
+    background:var(--panel); border:1px solid var(--hair); border-radius:12px;
+    padding:13px 15px; margin-bottom:10px; border-left:4px solid var(--hair);
+  }
+  .road-card[data-cat="control"]{ border-left-color:var(--navy); }
+  .road-card[data-cat="eficiencia"]{ border-left-color:var(--warn); }
+  .road-card[data-cat="servicio"]{ border-left-color:var(--risk); }
+  .road-title{ font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:13px; margin:0 0 7px; }
+  .chips{ display:flex; gap:6px; flex-wrap:wrap; }
+  .chip{
+    font-family:'IBM Plex Mono',monospace; font-size:10px; padding:2px 7px; border-radius:5px;
+    background:var(--bg); border:1px solid var(--hair); color:var(--steel);
+  }
+  .chip.kpi{ color:var(--navy); border-color:var(--navy); }
+
+  footer.note{
+    max-width:1180px; margin:10px auto 0; padding:16px 28px;
+    font-size:11.5px; color:var(--steel); border-top:1px solid var(--hair);
+  }
+
+  /* ---------- Simulador ROI ---------- */
+  .sim-wrap{ display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+  @media(max-width:900px){ .sim-wrap{ grid-template-columns:1fr; } }
+  .sim-card{
+    background:var(--panel); border:1px solid var(--hair); border-radius:14px;
+    padding:22px 24px;
+  }
+  .sim-slider-label{
+    display:flex; justify-content:space-between; align-items:baseline; margin-bottom:6px;
+  }
+  .sim-slider-label span:first-child{ font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:13.5px; }
+  .sim-slider-value{ font-family:'IBM Plex Mono',monospace; font-weight:600; font-size:20px; color:var(--navy); }
+  input[type="range"]{
+    width:100%; height:6px; border-radius:4px; appearance:none; -webkit-appearance:none;
+    background:linear-gradient(to right, var(--navy) 0%, var(--navy) var(--fill,50%), var(--hair) var(--fill,50%), var(--hair) 100%);
+    outline:none; margin:10px 0 4px;
+  }
+  input[type="range"]::-webkit-slider-thumb{
+    -webkit-appearance:none; width:20px; height:20px; border-radius:50%;
+    background:#fff; border:4px solid var(--navy); cursor:pointer; box-shadow:0 2px 6px rgba(0,0,0,.2);
+  }
+  input[type="range"]::-moz-range-thumb{
+    width:20px; height:20px; border-radius:50%; background:#fff; border:4px solid var(--navy);
+    cursor:pointer; box-shadow:0 2px 6px rgba(0,0,0,.2);
+  }
+  .sim-range-labels{ display:flex; justify-content:space-between; font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:var(--steel); margin-bottom:20px; }
+  .sim-input-row{
+    display:flex; align-items:center; justify-content:space-between; margin-top:18px;
+    padding-top:16px; border-top:1px dashed var(--hair);
+  }
+  .sim-input-row label{ font-size:12.5px; color:var(--steel); }
+  .sim-input-row input[type="number"]{
+    font-family:'IBM Plex Mono',monospace; font-size:14px; font-weight:600; color:var(--ink);
+    border:1px solid var(--hair); border-radius:8px; padding:7px 10px; width:120px; text-align:right;
+  }
+  .sim-metric{
+    display:flex; justify-content:space-between; align-items:baseline;
+    padding:12px 0; border-bottom:1px solid var(--hair);
+  }
+  .sim-metric:last-child{ border-bottom:none; }
+  .sim-metric-name{ font-size:12.5px; color:var(--steel); }
+  .sim-metric-val{ font-family:'IBM Plex Mono',monospace; font-weight:600; font-size:17px; }
+  .sim-metric-delta{ font-family:'IBM Plex Mono',monospace; font-size:11px; margin-left:8px; }
+  .sim-metric-delta.gain{ color:var(--gain); }
+  .sim-bar-row{ margin:14px 0; }
+  .sim-bar-label{ display:flex; justify-content:space-between; font-size:11.5px; color:var(--steel); margin-bottom:5px; }
+  .sim-bar-track{ height:10px; background:var(--bg); border:1px solid var(--hair); border-radius:6px; overflow:hidden; }
+  .sim-bar-fill{ height:100%; border-radius:6px; transition:width .15s ease; }
+  .sim-hero{
+    background:var(--navy); border-radius:14px; padding:22px 24px; color:#fff;
+    display:flex; flex-direction:column; justify-content:center; align-items:flex-start;
+  }
+  .sim-hero .label{ font-family:'IBM Plex Mono',monospace; font-size:10.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--ml-yellow); margin-bottom:8px; }
+  .sim-hero .amount{ font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:38px; line-height:1.1; }
+  .sim-hero .sub{ font-size:12.5px; color:#C7CAE0; margin-top:8px; }
+  .sim-disclaimer{
+    font-size:11px; color:var(--steel); font-style:italic; margin-top:14px; line-height:1.5;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation:none !important; transition:none !important; }
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top-inner">
+    <div>
+      <p class="brand-eyebrow">Mercado Libre Chile · Excelencia Operacional Transporte</p>
+      <h1 class="brand-title">Herramienta de diagnóstico y priorización — Calidad, Mejora Continua y Performance</h1>
+      <p class="brand-sub">Alejandro Carrasco Guerrero · Caso de negocio, plan de 60 días</p>
+    </div>
+  </div>
+</header>
+
+<nav class="tabs" role="tablist" aria-label="Secciones del caso">
+  <button class="tab-btn active" data-panel="diag" role="tab" aria-selected="true"><span class="n">01</span>Diagnóstico</button>
+  <button class="tab-btn" data-panel="matrix" role="tab" aria-selected="false"><span class="n">02</span>Priorización</button>
+  <button class="tab-btn" data-panel="road" role="tab" aria-selected="false"><span class="n">03</span>Roadmap 60 días</button>
+  <button class="tab-btn" data-panel="sim" role="tab" aria-selected="false"><span class="n">04</span>Simulador de Impacto</button>
+</nav>
+
+<div class="ribbon-wrap">
+  <div class="ribbon" aria-label="Cadena causal">
+    <span class="ribbon-label">Cadena causal</span>
+    <div class="rnode active" data-cat="control">
+      <span class="dot"></span>
+      <span><span class="txt">Control operacional</span><span class="sub">causa raíz</span></span>
+    </div>
+    <span class="rarrow">→</span>
+    <div class="rnode" data-cat="eficiencia">
+      <span class="dot"></span>
+      <span><span class="txt">Eficiencia</span><span class="sub">consecuencia</span></span>
+    </div>
+    <span class="rarrow">→</span>
+    <div class="rnode" data-cat="servicio">
+      <span class="dot"></span>
+      <span><span class="txt">Nivel de servicio</span><span class="sub">síntoma visible</span></span>
+    </div>
+  </div>
+</div>
+
+<main>
+
+  <!-- ===================== PANEL 1: DIAGNÓSTICO ===================== -->
+  <section class="panel active" id="panel-diag">
+    <h2 class="section-title">KPIs — Meta vs. Resultado Actual</h2>
+    <p class="section-sub">Clic en cada indicador para ver a qué eslabón de la cadena causal pertenece y por qué.</p>
+    <div class="kpi-grid" id="kpiGrid"></div>
+
+    <h2 class="section-title">Los tres problemas centrales</h2>
+    <p class="section-sub">Agrupados por su lugar en la cadena causal, no por indicador suelto.</p>
+    <div class="prob-grid">
+      <div class="prob-card" data-cat="control">
+        <p class="prob-title">1 · Pérdida de control operacional</p>
+        <ul>
+          <li>KPIs revisados semanalmente, no diariamente</li>
+          <li>Sin visibilidad en tiempo real</li>
+          <li>Sin auditoría estandarizada de transportistas</li>
+          <li>Sin seguimiento estructurado de planes de acción</li>
+        </ul>
+        <p class="prob-so">→ La organización reacciona tarde frente a los desvíos.</p>
+      </div>
+      <div class="prob-card" data-cat="eficiencia">
+        <p class="prob-title">2 · Baja eficiencia operacional</p>
+        <ul>
+          <li>Utilización de flota 68% vs. meta 85%</li>
+          <li>Productividad 16 vs. meta 22 paq/h</li>
+          <li>Sobreasignación de rutas, baja adherencia (Zona Metropolitana)</li>
+          <li>Costo por envío 30% sobre meta</li>
+        </ul>
+        <p class="prob-so">→ Indica problemas de planificación y uso de recursos.</p>
+      </div>
+      <div class="prob-card" data-cat="servicio">
+        <p class="prob-title">3 · Deterioro del nivel de servicio</p>
+        <ul>
+          <li>OTD 92,8% vs. meta 97%</li>
+          <li>First Attempt Delivery 89,5% vs. meta 96%</li>
+          <li>Reclamos 1,9% vs. meta &lt;0,8%</li>
+          <li>Reintentos 1,8 vs. meta 1,1</li>
+        </ul>
+        <p class="prob-so">→ Resultado visible para el cliente de las dos causas anteriores.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== PANEL 2: MATRIZ ===================== -->
+  <section class="panel" id="panel-matrix">
+    <h2 class="section-title">Matriz Impacto / Esfuerzo</h2>
+    <p class="section-sub">8 iniciativas del plan de 60 días, ubicadas por impacto esperado y esfuerzo de implementación. Clic en un punto para ver el detalle. Contorno claro = Quick Win.</p>
+    <div class="matrix-wrap">
+      <div class="matrix-box">
+        <div class="matrix-grid" id="matrixGrid">
+          <span class="quad-tag" style="top:6px; left:10px;">Evaluar</span>
+          <span class="quad-tag" style="top:6px; right:10px;">Prioridad</span>
+          <span class="quad-tag" style="bottom:6px; left:10px;">Descartar</span>
+          <span class="quad-tag" style="bottom:6px; right:10px;">Planificar</span>
+          <span class="axis-y">Impacto →</span>
+        </div>
+        <p class="axis-label axis-x">Esfuerzo de implementación →</p>
+        <div class="legend">
+          <span><i style="background:var(--navy)"></i>Control</span>
+          <span><i style="background:var(--warn)"></i>Eficiencia</span>
+          <span><i style="background:var(--risk)"></i>Servicio</span>
+          <span><i style="background:#fff; box-shadow:0 0 0 2px var(--gain)"></i>Quick Win (0–30 días)</span>
+        </div>
+      </div>
+      <div class="detail-panel" id="detailPanel">
+        <p class="detail-empty">Seleccioná una iniciativa en la matriz para ver su detalle.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== PANEL 3: ROADMAP ===================== -->
+  <section class="panel" id="panel-road">
+    <h2 class="section-title">Roadmap 60 días</h2>
+    <p class="section-sub">Mismas 8 iniciativas, organizadas en el tiempo.</p>
+    <div class="road-cols">
+      <div>
+        <div class="road-col-head"><h3>Quick Wins</h3><span class="days">0–30 días</span></div>
+        <div id="roadQW"></div>
+      </div>
+      <div>
+        <div class="road-col-head"><h3>Mediano plazo</h3><span class="days">30–60 días</span></div>
+        <div id="roadMP"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== PANEL 4: SIMULADOR DE IMPACTO ===================== -->
+  <section class="panel" id="panel-sim">
+    <h2 class="section-title">Simulador de Impacto — ¿Qué pasa si sube la utilización de flota?</h2>
+    <p class="section-sub">Movés el slider entre el resultado actual (68%) y la meta (85%). Costo por envío y productividad se recalculan en tiempo real, con una relación lineal simple entre ambos puntos conocidos del caso.</p>
+
+    <div class="sim-wrap">
+      <div class="sim-card">
+        <div class="sim-slider-label">
+          <span>Utilización de flota</span>
+          <span class="sim-slider-value"><span id="simUtilVal">68</span>%</span>
+        </div>
+        <input type="range" id="simSlider" min="68" max="90" step="1" value="68">
+        <div class="sim-range-labels">
+          <span>68% actual</span>
+          <span>85% meta</span>
+          <span>90%</span>
+        </div>
+
+        <div class="sim-bar-row">
+          <div class="sim-bar-label"><span>Costo por envío</span><span id="simCostoLabel">CLP $3.650</span></div>
+          <div class="sim-bar-track"><div class="sim-bar-fill" id="simCostoBar" style="background:var(--risk); width:100%;"></div></div>
+        </div>
+        <div class="sim-bar-row">
+          <div class="sim-bar-label"><span>Productividad repartidor</span><span id="simProdLabel">16 paq/h</span></div>
+          <div class="sim-bar-track"><div class="sim-bar-fill" id="simProdBar" style="background:var(--warn); width:73%;"></div></div>
+        </div>
+
+        <div class="sim-input-row">
+          <label for="simVolumen">Envíos mensuales estimados (editable)</label>
+          <input type="number" id="simVolumen" value="60000" min="1000" step="1000">
+        </div>
+
+        <p class="sim-disclaimer">Modelo simplificado con interpolación lineal entre el resultado actual y la meta del caso — sirve para ilustrar el orden de magnitud del impacto, no como proyección financiera exacta. El volumen mensual es un supuesto editable: no está en el caso original.</p>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:14px;">
+        <div class="sim-hero">
+          <span class="label">Ahorro mensual estimado</span>
+          <span class="amount" id="simAhorro">CLP $0</span>
+          <span class="sub" id="simAhorroSub">vs. costo actual, al volumen indicado</span>
+        </div>
+        <div class="sim-card" style="padding:18px 22px;">
+          <div class="sim-metric">
+            <span class="sim-metric-name">Costo por envío</span>
+            <span><span class="sim-metric-val" id="simCostoNum">CLP $3.650</span><span class="sim-metric-delta gain" id="simCostoDelta"></span></span>
+          </div>
+          <div class="sim-metric">
+            <span class="sim-metric-name">Productividad</span>
+            <span><span class="sim-metric-val" id="simProdNum">16 paq/h</span><span class="sim-metric-delta gain" id="simProdDelta"></span></span>
+          </div>
+          <div class="sim-metric">
+            <span class="sim-metric-name">Costo mensual total (flota)</span>
+            <span><span class="sim-metric-val" id="simTotalNum">—</span></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="note">
+  Documento de trabajo — iniciativas y ubicación en la matriz son un borrador inicial para ajustar en la sesión de Análisis de Causa Raíz. Caso de negocio · Analista Senior de Calidad, Mejora Continua y Performance · Mercado Libre Chile.
+</footer>
+
+<script>
+const CAT_LABEL = { control:'Control operacional', eficiencia:'Eficiencia operacional', servicio:'Nivel de servicio' };
+
+const KPIS = [
+  { name:'On Time Delivery (OTD)', meta:'97%', actual:'92,8%', gap:'-4,2 pp', cat:'servicio',
+    why:'Resultado final de fallas en control y eficiencia previas: si no se planifica ni se supervisa bien la ruta, la entrega llega tarde.' },
+  { name:'First Attempt Delivery', meta:'96%', actual:'89,5%', gap:'-6,5 pp', cat:'servicio',
+    why:'Cae cuando no hay validación previa de dirección/contacto ni ajuste de ventana horaria — consecuencia de baja planificación.' },
+  { name:'Reclamos por entrega', meta:'<0,8%', actual:'1,9%', gap:'+1,1 pp', cat:'servicio',
+    why:'El síntoma más visible para el cliente. No se ataca directo: se resuelve mejorando control y eficiencia.' },
+  { name:'Reintentos promedio', meta:'1,1', actual:'1,8', gap:'+0,7', cat:'servicio',
+    why:'Reflejo de rutas mal planificadas o clientes no contactados a tiempo.' },
+  { name:'Cancelaciones operacionales', meta:'<0,5%', actual:'1,3%', gap:'+0,8 pp', cat:'eficiencia',
+    why:'Ocurre cuando la flota está sobreasignada y no alcanza a completar la ruta planificada.' },
+  { name:'Utilización de flota', meta:'85%', actual:'68%', gap:'-17 pp', cat:'eficiencia',
+    why:'Sin visibilidad en tiempo real ni auditoría de transportistas, es difícil detectar y corregir el subuso de la flota.' },
+  { name:'Costo por envío', meta:'CLP $2.800', actual:'CLP $3.650', gap:'+30%', cat:'eficiencia',
+    why:'El sobrecosto acompaña la baja utilización: menos paquetes por recurso desplegado, mismo costo fijo.' },
+  { name:'Productividad repartidor', meta:'22 paq/h', actual:'16 paq/h', gap:'-27%', cat:'eficiencia',
+    why:'Cae por sobreasignación de rutas y baja adherencia a la planificación, especialmente en ventanas PM de Zona Metropolitana.' },
+];
+
+const INITIATIVES = [
+  { id:1, title:'Rutina diaria de revisión de KPIs con escalamiento', cat:'control', qw:true,  impact:82, effort:22, riesgo:'Bajo — requiere disciplina, no inversión', kpi:'Todos' },
+  { id:2, title:'Auditoría exprés a transportistas de mayor volumen', cat:'control', qw:true,  impact:60, effort:30, riesgo:'Bajo — depende de disponibilidad de datos', kpi:'Utilización de flota' },
+  { id:3, title:'Rebalanceo de rutas en ventanas PM (Zona Metropolitana)', cat:'eficiencia', qw:true, impact:78, effort:38, riesgo:'Medio — puede requerir ajuste con transportistas', kpi:'Productividad, OTD' },
+  { id:4, title:'Clasificación de motivos de reclamo', cat:'servicio', qw:true, impact:55, effort:18, riesgo:'Bajo — es un cambio de proceso interno', kpi:'Reclamos' },
+  { id:5, title:'Tablero de control en tiempo real (TMS/GPS)', cat:'control', qw:false, impact:90, effort:80, riesgo:'Alto — posible inversión en herramienta', kpi:'Utilización de flota, Cancelaciones' },
+  { id:6, title:'Rediseño de asignación de rutas y ventanas de despacho', cat:'eficiencia', qw:false, impact:85, effort:62, riesgo:'Medio — cambio de proceso con transportistas', kpi:'Productividad, Costo por envío' },
+  { id:7, title:'Scorecard / certificación de transportistas', cat:'control', qw:false, impact:65, effort:70, riesgo:'Medio — requiere gobernanza contractual', kpi:'Utilización de flota' },
+  { id:8, title:'Plan de reducción de reintentos (validación previa)', cat:'servicio', qw:false, impact:58, effort:45, riesgo:'Bajo — ajuste de proceso de despacho', kpi:'Reintentos, First Attempt' },
+];
+
+/* ---------- Tabs ---------- */
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>{ b.classList.remove('active'); b.setAttribute('aria-selected','false'); });
+    btn.classList.add('active'); btn.setAttribute('aria-selected','true');
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+    document.getElementById('panel-'+btn.dataset.panel).classList.add('active');
+  });
+});
+
+/* ---------- Causal ribbon ---------- */
+document.querySelectorAll('.rnode').forEach(node=>{
+  node.addEventListener('click', ()=>{
+    document.querySelectorAll('.rnode').forEach(n=>n.classList.remove('active'));
+    node.classList.add('active');
+    const cat = node.dataset.cat;
+    document.querySelectorAll('[data-cat]').forEach(el=>{
+      if(el.classList.contains('rnode')) return;
+      el.style.opacity = (el.dataset.cat === cat) ? '1' : '.35';
+    });
+  });
+});
+
+/* ---------- KPI grid ---------- */
+const kpiGrid = document.getElementById('kpiGrid');
+KPIS.forEach((k,i)=>{
+  const card = document.createElement('div');
+  card.className = 'kpi-card';
+  card.dataset.cat = k.cat;
+  card.innerHTML = `
+    <p class="kpi-name">${k.name}</p>
+    <div class="kpi-values">
+      <span class="kpi-actual">${k.actual}</span>
+      <span class="kpi-meta">/ meta ${k.meta}</span>
+    </div>
+    <span class="kpi-gap bad">${k.gap}</span>
+    <div class="kpi-detail">
+      <strong>${CAT_LABEL[k.cat]}</strong> — ${k.why}
+    </div>
+  `;
+  card.addEventListener('click', ()=> card.classList.toggle('open'));
+  kpiGrid.appendChild(card);
+});
+
+/* ---------- Matrix ---------- */
+const matrixGrid = document.getElementById('matrixGrid');
+const detailPanel = document.getElementById('detailPanel');
+
+function renderDetail(it){
+  detailPanel.innerHTML = `
+    <span class="detail-tag" style="background:${catBg(it.cat)}; color:${catColor(it.cat)}">${CAT_LABEL[it.cat]}${it.qw ? ' · Quick Win' : ''}</span>
+    <p class="detail-title">${it.title}</p>
+    <div class="detail-row"><span>Impacto esperado</span><b>${it.impact}/100</b></div>
+    <div class="detail-row"><span>Esfuerzo</span><b>${it.effort}/100</b></div>
+    <div class="detail-row"><span>Ventana</span><b>${it.qw ? '0–30 días' : '30–60 días'}</b></div>
+    <div class="detail-row"><span>Riesgo</span><b>${it.riesgo}</b></div>
+    <div class="detail-row"><span>KPI que mueve</span><b>${it.kpi}</b></div>
+  `;
+}
+function catBg(cat){ return cat==='control' ? '#E3E4F0' : cat==='eficiencia' ? 'var(--warn-soft)' : 'var(--risk-soft)'; }
+function catColor(cat){ return cat==='control' ? 'var(--navy)' : cat==='eficiencia' ? 'var(--warn)' : 'var(--risk)'; }
+
+INITIATIVES.forEach(it=>{
+  const pt = document.createElement('div');
+  pt.className = 'pt' + (it.qw ? ' qw' : '');
+  pt.dataset.cat = it.cat;
+  pt.style.left = it.effort + '%';
+  pt.style.bottom = it.impact + '%';
+  pt.textContent = it.id;
+  pt.title = it.title;
+  pt.addEventListener('click', ()=>{
+    document.querySelectorAll('.pt').forEach(p=>p.classList.remove('sel'));
+    pt.classList.add('sel');
+    renderDetail(it);
+  });
+  matrixGrid.appendChild(pt);
+});
+
+/* ---------- Roadmap ---------- */
+const roadQW = document.getElementById('roadQW');
+const roadMP = document.getElementById('roadMP');
+INITIATIVES.forEach(it=>{
+  const card = document.createElement('div');
+  card.className = 'road-card';
+  card.dataset.cat = it.cat;
+  card.innerHTML = `
+    <p class="road-title">${it.title}</p>
+    <div class="chips">
+      <span class="chip">${CAT_LABEL[it.cat]}</span>
+      <span class="chip">Impacto ${it.impact}</span>
+      <span class="chip">Esfuerzo ${it.effort}</span>
+      <span class="chip kpi">${it.kpi}</span>
+    </div>
+  `;
+  (it.qw ? roadQW : roadMP).appendChild(card);
+});
+
+/* ---------- Simulador de Impacto (ROI) ---------- */
+const ANCHOR = {
+  util_actual: 68, util_meta: 85,
+  costo_actual: 3650, costo_meta: 2800,
+  prod_actual: 16, prod_meta: 22,
+};
+const simSlider = document.getElementById('simSlider');
+const simVolumen = document.getElementById('simVolumen');
+
+function lerp(u){
+  const t = (u - ANCHOR.util_actual) / (ANCHOR.util_meta - ANCHOR.util_actual);
+  const costo = ANCHOR.costo_actual + (ANCHOR.costo_meta - ANCHOR.costo_actual) * t;
+  const prod = ANCHOR.prod_actual + (ANCHOR.prod_meta - ANCHOR.prod_actual) * t;
+  return { costo, prod };
+}
+function fmtCLP(n){ return 'CLP $' + Math.round(n).toLocaleString('es-CL'); }
+
+function updateSim(){
+  const u = Number(simSlider.value);
+  simSlider.style.setProperty('--fill', ((u-68)/(90-68)*100) + '%');
+  document.getElementById('simUtilVal').textContent = u;
+
+  const { costo, prod } = lerp(u);
+  document.getElementById('simCostoLabel').textContent = fmtCLP(costo);
+  document.getElementById('simProdLabel').textContent = prod.toFixed(1) + ' paq/h';
+  document.getElementById('simCostoNum').textContent = fmtCLP(costo);
+  document.getElementById('simProdNum').textContent = prod.toFixed(1) + ' paq/h';
+
+  // Bars: costo bar shrinks as cost drops (relative to actual=100%), prod bar grows toward meta
+  const costoPct = Math.max(15, (costo / ANCHOR.costo_actual) * 100);
+  const prodPct = Math.min(100, (prod / 22) * 100);
+  document.getElementById('simCostoBar').style.width = costoPct + '%';
+  document.getElementById('simProdBar').style.width = prodPct + '%';
+
+  const costoDeltaPct = ((ANCHOR.costo_actual - costo) / ANCHOR.costo_actual) * 100;
+  const prodDeltaPct = ((prod - ANCHOR.prod_actual) / ANCHOR.prod_actual) * 100;
+  document.getElementById('simCostoDelta').textContent = costoDeltaPct > 0.05 ? ` -${costoDeltaPct.toFixed(1)}%` : '';
+  document.getElementById('simProdDelta').textContent = prodDeltaPct > 0.05 ? ` +${prodDeltaPct.toFixed(1)}%` : '';
+
+  const vol = Math.max(0, Number(simVolumen.value) || 0);
+  const ahorroTotal = (ANCHOR.costo_actual - costo) * vol;
+  document.getElementById('simAhorro').textContent = fmtCLP(ahorroTotal);
+  document.getElementById('simAhorroSub').textContent = `vs. costo actual, sobre ${vol.toLocaleString('es-CL')} envíos/mes`;
+  document.getElementById('simTotalNum').textContent = fmtCLP(costo * vol);
+}
+simSlider.addEventListener('input', updateSim);
+simVolumen.addEventListener('input', updateSim);
+updateSim();
+</script>
+</body>
+</html>

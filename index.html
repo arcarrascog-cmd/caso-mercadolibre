@@ -65,21 +65,6 @@
   .brand-sub{
     font-size:13px; color:#C7CAE0; margin:4px 0 0;
   }
-  .print-btn{
-    font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:600; color:var(--ml-yellow);
-    background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.25); border-radius:999px;
-    padding:9px 16px; cursor:pointer; white-space:nowrap; flex:none; align-self:flex-end;
-    transition:background .15s ease;
-  }
-  .print-btn:hover{ background:rgba(255,255,255,.16); }
-
-  @media print{
-    header.top .print-btn, nav.tabs, .ribbon-wrap, .cover-replay { display:none !important; }
-    .panel{ display:block !important; page-break-after:always; }
-    .panel:last-child{ page-break-after:auto; }
-    #simSlider, #simVolumen{ display:none; }
-    body{ background:#fff; }
-  }
 
   /* ---------- Tabs ---------- */
   nav.tabs{
@@ -341,12 +326,6 @@
   .sim-disclaimer{
     font-size:11px; color:var(--steel); font-style:italic; margin-top:14px; line-height:1.5;
   }
-  .sim-xref{
-    font-size:12.5px; color:var(--navy); background:var(--gain-soft); border:1px solid #cfe8dd;
-    border-radius:10px; padding:10px 14px; margin:-4px 0 20px; cursor:pointer; display:inline-block;
-  }
-  .sim-xref:hover{ text-decoration:underline; }
-  .sim-xref strong{ color:var(--gain); }
 
   @media (prefers-reduced-motion: reduce){
     *{ animation:none !important; transition:none !important; }
@@ -431,7 +410,6 @@
       <h1 class="brand-title">Herramienta de diagnóstico y priorización — Calidad, Mejora Continua y Performance</h1>
       <p class="brand-sub">Alejandro Carrasco Guerrero · Caso de negocio, plan de 60 días</p>
     </div>
-    <button class="print-btn" id="printBtn" type="button">🖨 Vista imprimible / PDF</button>
   </div>
 </header>
 
@@ -558,7 +536,7 @@
           <li>Sin seguimiento estructurado de planes de acción</li>
         </ul>
         <p class="prob-so">→ La organización reacciona tarde frente a los desvíos.</p>
-        <p class="prob-link-hint">↳ Ver iniciativas relacionadas en el Roadmap</p>
+        <p class="prob-link-hint">→ Ver iniciativas relacionadas en el Roadmap</p>
       </div>
       <div class="prob-card" data-cat="eficiencia">
         <p class="prob-title">2 · Baja eficiencia operacional</p>
@@ -569,7 +547,7 @@
           <li>Costo por envío 30% sobre meta</li>
         </ul>
         <p class="prob-so">→ Indica problemas de planificación y uso de recursos.</p>
-        <p class="prob-link-hint">↳ Ver iniciativas relacionadas en el Roadmap</p>
+        <p class="prob-link-hint">→ Ver iniciativas relacionadas en el Roadmap</p>
       </div>
       <div class="prob-card" data-cat="servicio">
         <p class="prob-title">3 · Deterioro del nivel de servicio</p>
@@ -580,7 +558,7 @@
           <li>Reintentos 1,8 vs. meta 1,1</li>
         </ul>
         <p class="prob-so">→ Resultado visible para el cliente de las dos causas anteriores.</p>
-        <p class="prob-link-hint">↳ Ver iniciativas relacionadas en el Roadmap</p>
+        <p class="prob-link-hint">→ Ver iniciativas relacionadas en el Roadmap</p>
       </div>
     </div>
   </section>
@@ -632,7 +610,6 @@
   <section class="panel" id="panel-sim">
     <h2 class="section-title">Simulador de Impacto — ¿Qué pasa si sube la utilización de flota?</h2>
     <p class="section-sub">Movés el slider entre el resultado actual (68%) y la meta (85%). Costo por envío y productividad se recalculan en tiempo real, con una relación lineal simple entre ambos puntos conocidos del caso.</p>
-    <p class="sim-xref" id="simXref">↳ Esta utilización se mueve principalmente con <strong>"Tablero de control en tiempo real (TMS/GPS)"</strong> del Roadmap — la iniciativa de mediano plazo con mayor impacto individual.</p>
 
     <div class="sim-wrap">
       <div class="sim-card">
@@ -782,25 +759,6 @@ document.querySelectorAll('.tab-btn').forEach(btn=>{
     document.querySelectorAll('.road-card').forEach(rc=> rc.classList.remove('highlight','dimmed'));
   });
 });
-
-/* Conexión Simulador → Roadmap: clic resalta la iniciativa específica del tablero en tiempo real */
-const simXrefEl = document.getElementById('simXref');
-if (simXrefEl) simXrefEl.addEventListener('click', ()=>{
-  activateTab('road');
-  document.querySelectorAll('.road-card').forEach(rc=>{
-    const isMatch = rc.querySelector('.road-title') && rc.querySelector('.road-title').textContent.includes('Tablero de control en tiempo real');
-    rc.classList.toggle('highlight', isMatch);
-    rc.classList.toggle('dimmed', !isMatch);
-  });
-  setTimeout(()=>{
-    const match = Array.from(document.querySelectorAll('.road-card')).find(rc => rc.querySelector('.road-title').textContent.includes('Tablero de control en tiempo real'));
-    if (match) match.scrollIntoView({ behavior:'smooth', block:'center' });
-  }, 50);
-});
-
-/* Vista imprimible / PDF */
-const printBtn = document.getElementById('printBtn');
-if (printBtn) printBtn.addEventListener('click', ()=> window.print());
 
 /* ---------- Portada: animación del camión ---------- */
 function animateCount(el, duration){

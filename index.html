@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Excelencia Operacional Transporte — Caso de Negocio</title>
+<title>Diagnóstico y Priorización — Caso de Negocio</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
 <style>
@@ -64,6 +64,21 @@
   }
   .brand-sub{
     font-size:13px; color:#C7CAE0; margin:4px 0 0;
+  }
+  .print-btn{
+    font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:600; color:var(--ml-yellow);
+    background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.25); border-radius:999px;
+    padding:9px 16px; cursor:pointer; white-space:nowrap; flex:none; align-self:flex-end;
+    transition:background .15s ease;
+  }
+  .print-btn:hover{ background:rgba(255,255,255,.16); }
+
+  @media print{
+    header.top .print-btn, nav.tabs, .ribbon-wrap, .cover-replay { display:none !important; }
+    .panel{ display:block !important; page-break-after:always; }
+    .panel:last-child{ page-break-after:auto; }
+    #simSlider, #simVolumen{ display:none; }
+    body{ background:#fff; }
   }
 
   /* ---------- Tabs ---------- */
@@ -166,8 +181,9 @@
   @media(max-width:860px){ .prob-grid{ grid-template-columns:1fr; } }
   .prob-card{
     background:var(--panel); border:1px solid var(--hair); border-radius:12px; padding:16px 17px;
-    border-top:4px solid var(--hair);
+    border-top:4px solid var(--hair); cursor:pointer; transition:box-shadow .15s ease, transform .15s ease;
   }
+  .prob-card:hover{ box-shadow:0 4px 14px rgba(31,36,82,.1); transform:translateY(-1px); }
   .prob-card[data-cat="control"]{ border-top-color:var(--navy); }
   .prob-card[data-cat="eficiencia"]{ border-top-color:var(--warn); }
   .prob-card[data-cat="servicio"]{ border-top-color:var(--risk); }
@@ -175,6 +191,12 @@
   .prob-card ul{ margin:0; padding-left:18px; font-size:12.5px; line-height:1.6; color:var(--ink); }
   .prob-card li{ margin-bottom:3px; }
   .prob-so{ font-size:11.5px; color:var(--steel); font-style:italic; margin-top:10px; }
+  .prob-link-hint{
+    font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--steel); margin-top:12px;
+    display:flex; align-items:center; gap:4px;
+  }
+  .road-card.highlight{ box-shadow:0 0 0 2px currentColor, 0 6px 18px rgba(31,36,82,.14); }
+  .road-card.dimmed{ opacity:.35; }
 
   /* ---------- Matrix ---------- */
   .matrix-wrap{ display:grid; grid-template-columns:1.3fr .9fr; gap:22px; align-items:start; }
@@ -319,6 +341,12 @@
   .sim-disclaimer{
     font-size:11px; color:var(--steel); font-style:italic; margin-top:14px; line-height:1.5;
   }
+  .sim-xref{
+    font-size:12.5px; color:var(--navy); background:var(--gain-soft); border:1px solid #cfe8dd;
+    border-radius:10px; padding:10px 14px; margin:-4px 0 20px; cursor:pointer; display:inline-block;
+  }
+  .sim-xref:hover{ text-decoration:underline; }
+  .sim-xref strong{ color:var(--gain); }
 
   @media (prefers-reduced-motion: reduce){
     *{ animation:none !important; transition:none !important; }
@@ -331,7 +359,7 @@
     position:relative; overflow:hidden;
     background:linear-gradient(180deg, #FFFFFF 0%, #FAFAF8 60%);
     border:1px solid var(--hair); border-radius:16px;
-    padding:32px 40px 0;
+    padding:32px 40px 28px;
     box-shadow:0 10px 30px rgba(31,36,82,.08);
   }
   .cover-topbar{ display:flex; align-items:center; justify-content:space-between; margin-bottom:22px; }
@@ -381,6 +409,7 @@
   }
   .cover-kpi-badge .k-label{ font-family:'IBM Plex Mono',monospace; font-size:9.5px; color:#9FA3C4; text-transform:uppercase; letter-spacing:.05em; }
   .cover-kpi-badge .k-val{ font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:15px; color:var(--ml-yellow); }
+  .cover-kpi-badge .k-meta{ font-family:'IBM Plex Mono',monospace; font-size:9px; color:#8388A8; margin-top:1px; }
 
   .cover-footer{
     display:flex; flex-direction:column; gap:2px; padding:16px 0 22px;
@@ -402,6 +431,7 @@
       <h1 class="brand-title">Herramienta de diagnóstico y priorización — Calidad, Mejora Continua y Performance</h1>
       <p class="brand-sub">Alejandro Carrasco Guerrero · Caso de negocio, plan de 60 días</p>
     </div>
+    <button class="print-btn" id="printBtn" type="button">🖨 Vista imprimible / PDF</button>
   </div>
 </header>
 
@@ -498,17 +528,14 @@
       <div class="cover-kpis" id="coverKpis">
         <div class="cover-kpi-badge">
           <span class="k-label">Utilización de flota</span>
-          <span class="k-val">68% → 85%</span>
+          <span class="k-val"><span class="k-count" data-start="68" data-end="85">68</span>%</span>
+          <span class="k-meta">meta 85%</span>
         </div>
         <div class="cover-kpi-badge">
           <span class="k-label">On Time Delivery</span>
-          <span class="k-val">92,8% → 97%</span>
+          <span class="k-val"><span class="k-count" data-start="92,8" data-end="97">92,8</span>%</span>
+          <span class="k-meta">meta 97%</span>
         </div>
-      </div>
-
-      <div class="cover-footer">
-        <span class="cover-name">Alejandro Carrasco Guerrero</span>
-        <span class="cover-role">Candidato · Excelencia Operacional Transporte</span>
       </div>
     </div>
   </section>
@@ -531,6 +558,7 @@
           <li>Sin seguimiento estructurado de planes de acción</li>
         </ul>
         <p class="prob-so">→ La organización reacciona tarde frente a los desvíos.</p>
+        <p class="prob-link-hint">↳ Ver iniciativas relacionadas en el Roadmap</p>
       </div>
       <div class="prob-card" data-cat="eficiencia">
         <p class="prob-title">2 · Baja eficiencia operacional</p>
@@ -541,6 +569,7 @@
           <li>Costo por envío 30% sobre meta</li>
         </ul>
         <p class="prob-so">→ Indica problemas de planificación y uso de recursos.</p>
+        <p class="prob-link-hint">↳ Ver iniciativas relacionadas en el Roadmap</p>
       </div>
       <div class="prob-card" data-cat="servicio">
         <p class="prob-title">3 · Deterioro del nivel de servicio</p>
@@ -551,6 +580,7 @@
           <li>Reintentos 1,8 vs. meta 1,1</li>
         </ul>
         <p class="prob-so">→ Resultado visible para el cliente de las dos causas anteriores.</p>
+        <p class="prob-link-hint">↳ Ver iniciativas relacionadas en el Roadmap</p>
       </div>
     </div>
   </section>
@@ -602,6 +632,7 @@
   <section class="panel" id="panel-sim">
     <h2 class="section-title">Simulador de Impacto — ¿Qué pasa si sube la utilización de flota?</h2>
     <p class="section-sub">Movés el slider entre el resultado actual (68%) y la meta (85%). Costo por envío y productividad se recalculan en tiempo real, con una relación lineal simple entre ambos puntos conocidos del caso.</p>
+    <p class="sim-xref" id="simXref">↳ Esta utilización se mueve principalmente con <strong>"Tablero de control en tiempo real (TMS/GPS)"</strong> del Roadmap — la iniciativa de mediano plazo con mayor impacto individual.</p>
 
     <div class="sim-wrap">
       <div class="sim-card">
@@ -693,23 +724,120 @@ const INITIATIVES = [
 ];
 
 /* ---------- Tabs ---------- */
+const TAB_ORDER = ['portada','diag','matrix','road','sim'];
+
+function activateTab(panelName){
+  const btn = document.querySelector(`.tab-btn[data-panel="${panelName}"]`);
+  if (!btn) return;
+  document.querySelectorAll('.tab-btn').forEach(b=>{ b.classList.remove('active'); b.setAttribute('aria-selected','false'); });
+  btn.classList.add('active'); btn.setAttribute('aria-selected','true');
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('panel-'+panelName).classList.add('active');
+  document.getElementById('ribbonWrap').style.display = (panelName === 'portada') ? 'none' : '';
+  if (panelName === 'portada') replayCoverAnimation();
+  try { sessionStorage.setItem('ml_caso_last_tab', panelName); } catch(e) { /* almacenamiento no disponible, se ignora */ }
+}
+
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=> activateTab(btn.dataset.panel));
+});
+
+/* Navegación por teclado (← →) entre pestañas, salvo cuando se está escribiendo en un campo */
+document.addEventListener('keydown', (e)=>{
+  if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+  const tag = (document.activeElement && document.activeElement.tagName) || '';
+  if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+  const current = document.querySelector('.tab-btn.active').dataset.panel;
+  let idx = TAB_ORDER.indexOf(current);
+  idx = e.key === 'ArrowRight' ? Math.min(idx+1, TAB_ORDER.length-1) : Math.max(idx-1, 0);
+  activateTab(TAB_ORDER[idx]);
+});
+
+/* Restaurar última pestaña vista en esta sesión (si el navegador lo permite) */
+(function restoreLastTab(){
+  try {
+    const saved = sessionStorage.getItem('ml_caso_last_tab');
+    if (saved && TAB_ORDER.includes(saved) && saved !== 'portada') activateTab(saved);
+  } catch(e) { /* almacenamiento no disponible: se queda en Portada por defecto */ }
+})();
+
+/* Conexión Diagnóstico → Roadmap: clic en un problema resalta sus iniciativas relacionadas */
+document.querySelectorAll('.prob-card').forEach(card=>{
+  card.addEventListener('click', ()=>{
+    const cat = card.dataset.cat;
+    activateTab('road');
+    document.querySelectorAll('.road-card').forEach(rc=>{
+      if (rc.dataset.cat === cat) { rc.classList.add('highlight'); rc.classList.remove('dimmed'); }
+      else { rc.classList.add('dimmed'); rc.classList.remove('highlight'); }
+    });
+    setTimeout(()=>{
+      const firstMatch = document.querySelector(`.road-card[data-cat="${cat}"]`);
+      if (firstMatch) firstMatch.scrollIntoView({ behavior:'smooth', block:'center' });
+    }, 50);
+  });
+});
+/* Al cambiar de pestaña manualmente, se limpia el resaltado del roadmap */
 document.querySelectorAll('.tab-btn').forEach(btn=>{
   btn.addEventListener('click', ()=>{
-    document.querySelectorAll('.tab-btn').forEach(b=>{ b.classList.remove('active'); b.setAttribute('aria-selected','false'); });
-    btn.classList.add('active'); btn.setAttribute('aria-selected','true');
-    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
-    document.getElementById('panel-'+btn.dataset.panel).classList.add('active');
-    document.getElementById('ribbonWrap').style.display = (btn.dataset.panel === 'portada') ? 'none' : '';
-    if (btn.dataset.panel === 'portada') replayCoverAnimation();
+    document.querySelectorAll('.road-card').forEach(rc=> rc.classList.remove('highlight','dimmed'));
   });
 });
 
+/* Conexión Simulador → Roadmap: clic resalta la iniciativa específica del tablero en tiempo real */
+const simXrefEl = document.getElementById('simXref');
+if (simXrefEl) simXrefEl.addEventListener('click', ()=>{
+  activateTab('road');
+  document.querySelectorAll('.road-card').forEach(rc=>{
+    const isMatch = rc.querySelector('.road-title') && rc.querySelector('.road-title').textContent.includes('Tablero de control en tiempo real');
+    rc.classList.toggle('highlight', isMatch);
+    rc.classList.toggle('dimmed', !isMatch);
+  });
+  setTimeout(()=>{
+    const match = Array.from(document.querySelectorAll('.road-card')).find(rc => rc.querySelector('.road-title').textContent.includes('Tablero de control en tiempo real'));
+    if (match) match.scrollIntoView({ behavior:'smooth', block:'center' });
+  }, 50);
+});
+
+/* Vista imprimible / PDF */
+const printBtn = document.getElementById('printBtn');
+if (printBtn) printBtn.addEventListener('click', ()=> window.print());
+
 /* ---------- Portada: animación del camión ---------- */
+function animateCount(el, duration){
+  const parseNum = s => parseFloat(String(s).replace(',', '.'));
+  const start = parseNum(el.dataset.start);
+  const end = parseNum(el.dataset.end);
+  const hasDecimalStart = String(el.dataset.start).includes(',');
+  const myRun = (el._countRun = (el._countRun || 0) + 1); // invalida cualquier animación anterior en este elemento
+  const t0 = performance.now();
+  function fmt(v){
+    if (Math.abs(v - Math.round(v)) < 0.05 && !hasDecimalStart) return String(Math.round(v));
+    return v.toFixed(1).replace('.', ',');
+  }
+  function step(now){
+    if (el._countRun !== myRun) return; // una animación más nueva reemplazó a esta: abortar
+    const t = Math.min(1, (now - t0) / duration);
+    const eased = 1 - Math.pow(1 - t, 2); // ease-out
+    const val = start + (end - start) * eased;
+    el.textContent = t < 1 ? fmt(val) : String(Number.isInteger(end) ? end : fmt(end));
+    if (t < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+function triggerKpiCounts(){
+  document.querySelectorAll('.k-count').forEach(el=> animateCount(el, 1300));
+}
+setTimeout(triggerKpiCounts, 2750); // primera carga automática de la portada
+
 function replayCoverAnimation(){
   ['truckGroup','family','coverKpis'].forEach(id=>{
     const el = document.getElementById(id);
     if(!el) return;
     el.style.animation = 'none';
+  });
+  document.querySelectorAll('.k-count').forEach(el=>{
+    el._countRun = (el._countRun || 0) + 1; // cancela cualquier conteo en curso de inmediato
+    el.textContent = el.dataset.start;
   });
   void document.body.offsetHeight; // forzar reflow global (offsetHeight en <g> de SVG no alcanza)
   ['truckGroup','family','coverKpis'].forEach(id=>{
@@ -717,6 +845,7 @@ function replayCoverAnimation(){
     if(!el) return;
     el.style.animation = '';
   });
+  setTimeout(triggerKpiCounts, 2750);
 }
 const coverReplayBtn = document.getElementById('coverReplay');
 if (coverReplayBtn) coverReplayBtn.addEventListener('click', replayCoverAnimation);

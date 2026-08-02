@@ -356,40 +356,102 @@
     font-size:11px; color:var(--steel); font-style:italic; margin-top:14px; line-height:1.5;
   }
 
+  /* ---------- Seguimiento Semanal ---------- */
+  .track-toolbar{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:18px; }
+  .track-toolbar button{
+    font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:12.5px;
+    border-radius:999px; padding:8px 16px; cursor:pointer; border:1.5px solid var(--navy);
+    background:var(--navy); color:#fff;
+  }
+  .track-toolbar button.ghost{ background:transparent; color:var(--steel); border-color:var(--hair); }
+  .track-toolbar button:active{ transform:scale(.96); }
+  .track-demo-tag{
+    font-size:11px; color:var(--warn); font-style:italic; display:none;
+  }
+  .track-demo-tag.show{ display:inline; }
+  .track-grid{ display:flex; flex-direction:column; gap:16px; }
+  .track-card{
+    background:var(--panel); border:1px solid var(--hair); border-radius:12px; padding:16px 18px;
+  }
+  .track-card-head{ display:flex; justify-content:space-between; align-items:baseline; margin-bottom:10px; flex-wrap:wrap; gap:6px; }
+  .track-title{ font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:14px; margin:0; }
+  .track-goal{ font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--steel); }
+  .track-chart{ width:100%; height:110px; overflow:visible; }
+  .track-legend{ display:flex; gap:16px; margin:8px 0 12px; font-size:11px; color:var(--steel); }
+  .track-legend span{ display:flex; align-items:center; gap:5px; }
+  .track-legend i{ width:14px; height:0; border-top:2px dashed var(--steel); display:inline-block; }
+  .track-legend i.solid{ border-top:2.5px solid var(--navy); }
+  .track-inputs{ display:grid; grid-template-columns:repeat(9,1fr); gap:6px; margin-top:4px; }
+  .track-input-col{ display:flex; flex-direction:column; align-items:center; gap:3px; }
+  .track-input-col label{ font-family:'IBM Plex Mono',monospace; font-size:9px; color:var(--steel); }
+  .track-input-col input{
+    width:100%; text-align:center; font-family:'IBM Plex Mono',monospace; font-size:11px;
+    border:1px solid var(--hair); border-radius:6px; padding:5px 2px; color:var(--ink);
+  }
+  .track-input-col input.filled{ border-color:var(--gain); background:var(--gain-soft); font-weight:600; }
+  .track-input-col input.demo{ border-color:var(--warn); background:#fdf6e3; }
+
   @media (prefers-reduced-motion: reduce){
     *{ animation:none !important; transition:none !important; }
     #truckGroup{ transform: translate(555px,0) !important; }
-    #coverKpis{ opacity:1 !important; }
     #motionLines, #packageIcon{ opacity:0 !important; }
+    .cover-fade{ opacity:1 !important; }
   }
 
   /* ---------- Portada ilustrada ---------- */
   .cover-scene{
     position:relative; overflow:hidden;
-    background:linear-gradient(180deg, #FFFFFF 0%, #FAFAF8 60%);
+    background:#FFFFFF;
     border:1px solid var(--hair); border-radius:16px;
-    padding:32px 40px 28px;
-    box-shadow:0 10px 30px rgba(31,36,82,.08);
+    padding:40px 48px 34px;
+    box-shadow:0 10px 30px rgba(31,36,82,.06);
   }
-  .cover-topbar{ display:flex; align-items:center; justify-content:space-between; margin-bottom:22px; }
-  .cover-badge{
-    display:inline-block; background:#090E22; color:var(--ml-yellow);
-    font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:600; letter-spacing:.08em;
-    padding:9px 18px; border-radius:999px;
+  .cover-texture{ position:absolute; inset:0; width:100%; height:100%; pointer-events:none; }
+  .cover-topbar{ position:relative; display:flex; align-items:center; justify-content:space-between; margin-bottom:56px; }
+  .cover-wordmark{
+    font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:12px; letter-spacing:.14em;
+    color:var(--navy); text-transform:uppercase;
+  }
+  .cover-wordmark::before{
+    content:''; display:inline-block; width:7px; height:7px; background:var(--ml-yellow);
+    margin-right:8px; border-radius:1px; vertical-align:middle;
   }
   .cover-replay{
-    font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:600; color:var(--navy);
-    background:var(--bg); border:1.5px solid var(--hair); border-radius:999px; padding:8px 16px; cursor:pointer;
-    transition:border-color .15s ease;
+    position:absolute; right:24px; bottom:24px; z-index:2;
+    display:inline-flex; align-items:center; justify-content:center;
+    width:40px; height:40px; border-radius:50%;
+    background:#FFFFFF; border:1.5px solid var(--hair); color:var(--navy);
+    box-shadow:0 4px 12px rgba(31,36,82,.12); cursor:pointer;
+    transition:all .15s ease;
   }
-  .cover-replay:hover{ border-color:var(--navy); }
-  .cover-eyebrow{ color:var(--steel); font-size:16px; margin:0 0 6px; }
-  .cover-title{
-    font-family:'Space Grotesk',sans-serif; font-weight:700; color:#090E22;
-    font-size:clamp(24px, 3.4vw, 34px); line-height:1.18; margin:0 0 10px; max-width:640px;
-  }
-  .cover-sub{ color:var(--warn); font-size:13.5px; font-weight:600; margin:0 0 10px; }
+  .cover-replay:hover{ border-color:var(--navy); background:var(--navy); color:#FFFFFF; transform:scale(1.06); }
+  .cover-replay:active{ transform:scale(.92); }
 
+  .cover-hero{ position:relative; max-width:600px; }
+  .cover-fade{ opacity:0; animation: heroIn 650ms ease-out forwards; }
+  .cover-hero .cover-kicker{ animation-delay:0ms; }
+  .cover-hero .cover-maintitle{ animation-delay:90ms; }
+  .cover-hero .cover-roletitle{ animation-delay:180ms; }
+  .cover-hero .cover-byline{ animation-delay:270ms; }
+  @keyframes heroIn{ from{ opacity:0; transform:translateY(10px); } to{ opacity:1; transform:translateY(0); } }
+
+  .cover-kicker{
+    font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:600; letter-spacing:.12em;
+    color:var(--steel); text-transform:uppercase; margin:0 0 14px;
+  }
+  .cover-maintitle{
+    font-family:'Space Grotesk',sans-serif; font-weight:800; color:var(--navy);
+    font-size:clamp(26px, 3.6vw, 40px); line-height:1.18; margin:0 0 16px; letter-spacing:-.01em;
+  }
+  .cover-roletitle{
+    font-family:'Space Grotesk',sans-serif; font-weight:500; color:var(--navy-soft);
+    font-size:clamp(15px, 1.6vw, 17px); line-height:1.4; margin:0;
+  }
+  .cover-byline{ display:flex; align-items:center; gap:10px; margin-top:26px; }
+  .cover-byline-rule{ width:28px; height:2px; background:var(--ml-yellow); flex:none; }
+  .cover-byline-name{ font-family:'IBM Plex Mono',monospace; font-size:12.5px; letter-spacing:.02em; color:var(--steel); }
+
+  .cover-trackwrap{ position:relative; margin-top:52px; }
   .cover-illustration{ width:100%; height:auto; display:block; margin-top:4px; }
   #truckGroup{ animation: driveIn 2.6s ease-out forwards; }
   #truckGroup.replay{ animation: none; }
@@ -403,7 +465,6 @@
     0%,100%{ transform:rotate(0deg); }
     50%{ transform:rotate(-4deg) translateY(-2px); }
   }
-
   #motionLines{ opacity:0; animation: motionFade 2.6s ease-out forwards; }
   @keyframes motionFade{
     0%{ opacity:0; }
@@ -412,7 +473,6 @@
     72%{ opacity:0; }
     100%{ opacity:0; }
   }
-
   #packageIcon{
     opacity:0; transform:translate(670px,195px) scale(.5);
     animation: packageFly 2.6s ease-out forwards;
@@ -425,30 +485,9 @@
     100%{ opacity:0; transform:translate(775px,222px) scale(.7); }
   }
 
-  .cover-kpis{
-    display:flex; gap:14px; flex-wrap:wrap; margin:-18px 0 24px;
-    opacity:0; animation: kpiIn 0.5s ease-out 2.7s forwards;
-  }
-  @keyframes kpiIn{
-    from{ opacity:0; transform:translateY(8px); }
-    to{ opacity:1; transform:translateY(0); }
-  }
-  .cover-kpi-badge{
-    background:var(--navy); border-radius:10px; padding:10px 16px;
-    display:flex; flex-direction:column; gap:2px;
-  }
-  .cover-kpi-badge .k-label{ font-family:'IBM Plex Mono',monospace; font-size:9.5px; color:#9FA3C4; text-transform:uppercase; letter-spacing:.05em; }
-  .cover-kpi-badge .k-val{ font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:15px; color:var(--ml-yellow); }
-  .cover-kpi-badge .k-meta{ font-family:'IBM Plex Mono',monospace; font-size:9px; color:#8388A8; margin-top:1px; }
-
-  .cover-footer{
-    display:flex; flex-direction:column; gap:2px; padding:16px 0 22px;
-    border-top:1px solid var(--hair);
-  }
-  .cover-name{ font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:14px; color:var(--ink); }
-  .cover-role{ font-size:11px; color:var(--steel); }
   @media(max-width:700px){
-    .cover-scene{ padding:24px 20px 0; }
+    .cover-scene{ padding:28px 22px 24px; }
+    .cover-topbar{ margin-bottom:40px; }
   }
 </style>
 </head>
@@ -470,6 +509,7 @@
   <button class="tab-btn" data-panel="matrix" role="tab" aria-selected="false"><span class="n">02</span>Priorización</button>
   <button class="tab-btn" data-panel="road" role="tab" aria-selected="false"><span class="n">03</span>Roadmap 60 días</button>
   <button class="tab-btn" data-panel="sim" role="tab" aria-selected="false"><span class="n">04</span>Simulador de Impacto</button>
+  <button class="tab-btn" data-panel="track" role="tab" aria-selected="false"><span class="n">05</span>Seguimiento Semanal</button>
 </nav>
 
 <div class="ribbon-wrap" id="ribbonWrap" style="display:none;">
@@ -497,14 +537,31 @@
   <!-- ===================== PANEL 0: PORTADA ===================== -->
   <section class="panel active" id="panel-portada">
     <div class="cover-scene" id="coverScene">
+      <svg class="cover-texture" viewBox="0 0 900 400" preserveAspectRatio="none" aria-hidden="true">
+        <defs>
+          <pattern id="routeGrid" width="150" height="150" patternUnits="userSpaceOnUse" patternTransform="rotate(12)">
+            <circle cx="8" cy="8" r="2" fill="#1F2452"/>
+            <circle cx="130" cy="46" r="2" fill="#1F2452"/>
+            <circle cx="60" cy="120" r="2" fill="#1F2452"/>
+            <path d="M8,8 L130,46 M130,46 L60,120 M60,120 L8,8" fill="none" stroke="#1F2452" stroke-width="1"/>
+          </pattern>
+        </defs>
+        <rect x="0" y="0" width="900" height="400" fill="url(#routeGrid)" opacity="0.05"/>
+      </svg>
+
       <div class="cover-topbar">
-        <span class="cover-badge">MERCADO LIBRE CHILE</span>
-        <button class="cover-replay" id="coverReplay" type="button">↻ Repetir entrega</button>
+        <span class="cover-wordmark">Mercado Libre</span>
       </div>
 
-      <p class="cover-eyebrow">Caso de Negocio</p>
-      <h1 class="cover-title">Analista Senior de Calidad,<br>Mejora Continua y Performance</h1>
-      <p class="cover-sub">Diagnóstico causal · Análisis de causa raíz · Plan de acción a 60 días</p>
+      <div class="cover-hero">
+        <p class="cover-kicker cover-fade">Mercado Envíos</p>
+        <h1 class="cover-maintitle cover-fade">Business Case — Mercado&nbsp;Envíos</h1>
+        <p class="cover-roletitle cover-fade">Analista Sr. Calidad, Mejora Continua &amp; Performance</p>
+        <div class="cover-byline cover-fade">
+          <span class="cover-byline-rule"></span>
+          <span class="cover-byline-name">Alejandro Carrasco</span>
+        </div>
+      </div>
 
       <svg class="cover-illustration" viewBox="0 0 900 320" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
         <defs>
@@ -574,18 +631,13 @@
         </g>
       </svg>
 
-      <div class="cover-kpis" id="coverKpis">
-        <div class="cover-kpi-badge">
-          <span class="k-label">Utilización de flota</span>
-          <span class="k-val"><span class="k-count" data-start="68" data-end="85">68</span>%</span>
-          <span class="k-meta">antes: 68%</span>
-        </div>
-        <div class="cover-kpi-badge">
-          <span class="k-label">On Time Delivery</span>
-          <span class="k-val"><span class="k-count" data-start="92,8" data-end="97">92,8</span>%</span>
-          <span class="k-meta">antes: 92,8%</span>
-        </div>
-      </div>
+      <button class="cover-replay" id="coverReplay" type="button" aria-label="Repetir animación">
+        <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="9" cy="20" r="1"/>
+          <circle cx="18" cy="20" r="1"/>
+          <path d="M3 4h2l2.2 11.4a2 2 0 0 0 2 1.6h7.6a2 2 0 0 0 2-1.6L21 8H6"/>
+        </svg>
+      </button>
     </div>
   </section>
 
@@ -744,6 +796,22 @@
     </div>
   </section>
 
+  <!-- ===================== PANEL 5: SEGUIMIENTO SEMANAL ===================== -->
+  <section class="panel" id="panel-track">
+    <h2 class="section-title">Seguimiento Semanal — 60 días</h2>
+    <p class="section-sub">La trayectoria punteada es lo esperado si el plan avanza como está diseñado. Cada semana se carga el resultado real de la revisión — así se sostiene la gestión de performance en el tiempo, no solo el diagnóstico del día 1.</p>
+
+    <div class="track-toolbar">
+      <button id="trackDemoBtn" type="button">Ver ejemplo ilustrativo (2 semanas)</button>
+      <button id="trackClearBtn" type="button" class="ghost">Limpiar</button>
+      <span class="track-demo-tag" id="trackDemoTag">Datos de ejemplo — no son resultados reales todavía</span>
+    </div>
+
+    <div class="track-grid" id="trackGrid"></div>
+
+    <p class="sim-disclaimer">Trayectoria esperada calculada por interpolación lineal simple entre el resultado actual y la meta del caso, distribuida en 9 semanas (~60 días). Es un plan de referencia para comparar, no una promesa exacta semana a semana.</p>
+  </section>
+
 </main>
 
 <script>
@@ -780,7 +848,7 @@ const INITIATIVES = [
 ];
 
 /* ---------- Tabs ---------- */
-const TAB_ORDER = ['portada','diag','matrix','road','sim'];
+const TAB_ORDER = ['portada','diag','matrix','road','sim','track'];
 
 function activateTab(panelName){
   const btn = document.querySelector(`.tab-btn[data-panel="${panelName}"]`);
@@ -842,50 +910,22 @@ document.querySelectorAll('.tab-btn').forEach(btn=>{
   });
 });
 
-/* ---------- Portada: animación del camión ---------- */
-function animateCount(el, duration){
-  const parseNum = s => parseFloat(String(s).replace(',', '.'));
-  const start = parseNum(el.dataset.start);
-  const end = parseNum(el.dataset.end);
-  const hasDecimalStart = String(el.dataset.start).includes(',');
-  const myRun = (el._countRun = (el._countRun || 0) + 1); // invalida cualquier animación anterior en este elemento
-  const t0 = performance.now();
-  function fmt(v){
-    if (Math.abs(v - Math.round(v)) < 0.05 && !hasDecimalStart) return String(Math.round(v));
-    return v.toFixed(1).replace('.', ',');
-  }
-  function step(now){
-    if (el._countRun !== myRun) return; // una animación más nueva reemplazó a esta: abortar
-    const t = Math.min(1, (now - t0) / duration);
-    const eased = 1 - Math.pow(1 - t, 2); // ease-out
-    const val = start + (end - start) * eased;
-    el.textContent = t < 1 ? fmt(val) : String(Number.isInteger(end) ? end : fmt(end));
-    if (t < 1) requestAnimationFrame(step);
-  }
-  requestAnimationFrame(step);
-}
-function triggerKpiCounts(){
-  document.querySelectorAll('.k-count').forEach(el=> animateCount(el, 1300));
-}
-setTimeout(triggerKpiCounts, 2750); // primera carga automática de la portada
-
+/* ---------- Portada: animación del camión, familia y paquete ---------- */
 function replayCoverAnimation(){
-  ['truckGroup','family','coverKpis','motionLines','packageIcon'].forEach(id=>{
+  const fades = document.querySelectorAll('.cover-fade');
+  fades.forEach(el=> el.style.animation = 'none');
+  ['truckGroup','family','motionLines','packageIcon'].forEach(id=>{
     const el = document.getElementById(id);
     if(!el) return;
     el.style.animation = 'none';
   });
-  document.querySelectorAll('.k-count').forEach(el=>{
-    el._countRun = (el._countRun || 0) + 1; // cancela cualquier conteo en curso de inmediato
-    el.textContent = el.dataset.start;
-  });
-  void document.body.offsetHeight; // forzar reflow global (offsetHeight en <g> de SVG no alcanza)
-  ['truckGroup','family','coverKpis','motionLines','packageIcon'].forEach(id=>{
+  void document.body.offsetHeight; // forzar reflow
+  fades.forEach(el=> el.style.animation = '');
+  ['truckGroup','family','motionLines','packageIcon'].forEach(id=>{
     const el = document.getElementById(id);
     if(!el) return;
     el.style.animation = '';
   });
-  setTimeout(triggerKpiCounts, 2750);
 }
 const coverReplayBtn = document.getElementById('coverReplay');
 if (coverReplayBtn) coverReplayBtn.addEventListener('click', replayCoverAnimation);
@@ -1098,6 +1138,100 @@ function updateSim(){
 simSlider.addEventListener('input', updateSim);
 simVolumen.addEventListener('input', updateSim);
 updateSim();
+
+/* ---------- Seguimiento Semanal ---------- */
+const TRACK_KPIS = [
+  { id:'util', name:'Utilización de flota', unit:'pct', actualNum:68, metaNum:85, direction:'higher', cat:'eficiencia' },
+  { id:'otd', name:'On Time Delivery (OTD)', unit:'pct', actualNum:92.8, metaNum:97, direction:'higher', cat:'servicio' },
+  { id:'costo', name:'Costo por envío', unit:'clp', actualNum:3650, metaNum:2800, direction:'lower', cat:'eficiencia' },
+];
+const TX0 = 10, TX1 = 600, TY0 = 100;
+function tX(w){ return TX0 + w * (TX1 - TX0) / 9; }
+function tY(progress){ return Math.min(108, Math.max(4, TY0 - progress * 0.85)); }
+function trackExpected(k, w){ return k.actualNum + (k.metaNum - k.actualNum) * (w / 9); }
+function trackProgress(k, v){ return k.direction === 'higher' ? (v - k.actualNum) / (k.metaNum - k.actualNum) * 100 : (k.actualNum - v) / (k.actualNum - k.metaNum) * 100; }
+function trackFmtShort(k, v){ return k.unit === 'clp' ? Math.round(v).toLocaleString('es-CL') : v.toFixed(1).replace('.', ','); }
+function trackFmt(k, v){ return k.unit === 'clp' ? fmtCLP(v) : v.toFixed(1).replace('.', ',') + '%'; }
+
+function updateTrackChart(k){
+  const inputs = document.querySelectorAll(`input[data-kpi="${k.id}"]`);
+  let pts = [`${tX(0)},${tY(0)}`];
+  inputs.forEach(inp=>{
+    const val = inp.value.trim();
+    if (val !== '') {
+      const num = Number(val.replace(',', '.'));
+      if (!isNaN(num)) {
+        const w = Number(inp.dataset.week);
+        pts.push(`${tX(w)},${tY(trackProgress(k, num))}`);
+      }
+    }
+  });
+  const line = document.getElementById('trackReal-' + k.id);
+  if (line) line.setAttribute('points', pts.length > 1 ? pts.join(' ') : '');
+}
+
+const trackGrid = document.getElementById('trackGrid');
+TRACK_KPIS.forEach(k=>{
+  const color = CAT_COLOR[k.cat];
+  let expPts = [];
+  for (let w = 0; w <= 9; w++) expPts.push(`${tX(w)},${tY(trackProgress(k, trackExpected(k, w)))}`);
+  const card = document.createElement('div');
+  card.className = 'track-card';
+  card.innerHTML = `
+    <div class="track-card-head">
+      <p class="track-title">${k.name}</p>
+      <span class="track-goal">Meta semana 9: ${trackFmt(k, k.metaNum)}</span>
+    </div>
+    <div class="track-legend"><span><i></i>Esperado</span><span><i class="solid" style="border-top-color:${color}"></i>Real</span></div>
+    <svg class="track-chart" viewBox="0 0 620 112" preserveAspectRatio="none">
+      <line x1="10" y1="4" x2="10" y2="100" stroke="var(--hair)" stroke-width="1"/>
+      <line x1="10" y1="100" x2="600" y2="100" stroke="var(--hair)" stroke-width="1"/>
+      <polyline fill="none" stroke="var(--steel)" stroke-width="1.5" stroke-dasharray="4 3" points="${expPts.join(' ')}"/>
+      <polyline id="trackReal-${k.id}" fill="none" stroke="${color}" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" points=""/>
+      <circle cx="${tX(0)}" cy="${tY(0)}" r="3.5" fill="${color}"/>
+    </svg>
+    <div class="track-inputs" id="trackInputs-${k.id}"></div>
+  `;
+  const inputsWrap = card.querySelector('.track-inputs');
+  for (let w = 1; w <= 9; w++) {
+    const col = document.createElement('div');
+    col.className = 'track-input-col';
+    col.innerHTML = `<label>S${w}</label><input type="text" inputmode="decimal" data-kpi="${k.id}" data-week="${w}" placeholder="${trackFmtShort(k, trackExpected(k, w))}">`;
+    inputsWrap.appendChild(col);
+  }
+  trackGrid.appendChild(card);
+  card.querySelectorAll('input').forEach(inp=>{
+    inp.addEventListener('input', ()=>{
+      inp.classList.toggle('filled', inp.value.trim() !== '');
+      inp.classList.remove('demo');
+      updateTrackChart(k);
+    });
+  });
+});
+
+function trackFillDemo(){
+  TRACK_KPIS.forEach(k=>{
+    const range = Math.abs(k.metaNum - k.actualNum);
+    const sign = k.direction === 'higher' ? 1 : -1;
+    [1, 2].forEach(w=>{
+      let val = trackExpected(k, w) + sign * range * 0.05;
+      val = k.unit === 'clp' ? Math.round(val / 10) * 10 : Math.round(val * 10) / 10;
+      const inp = document.querySelector(`input[data-kpi="${k.id}"][data-week="${w}"]`);
+      if (inp) { inp.value = trackFmtShort(k, val); inp.classList.add('filled', 'demo'); }
+    });
+    updateTrackChart(k);
+  });
+  document.getElementById('trackDemoTag').classList.add('show');
+}
+function trackClearAll(){
+  document.querySelectorAll('#trackGrid input').forEach(inp=>{
+    inp.value = ''; inp.classList.remove('filled', 'demo');
+  });
+  TRACK_KPIS.forEach(k=> updateTrackChart(k));
+  document.getElementById('trackDemoTag').classList.remove('show');
+}
+document.getElementById('trackDemoBtn').addEventListener('click', trackFillDemo);
+document.getElementById('trackClearBtn').addEventListener('click', trackClearAll);
 </script>
 </body>
 </html>
